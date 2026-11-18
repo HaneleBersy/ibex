@@ -36,7 +36,7 @@ module ibex_top import ibex_pkg::*; import ibex_cheriot_pkg::*; #(
   parameter bit                     BranchPredictor              = 1'b0,
   parameter bit                     DbgTriggerEn                 = 1'b0,
   parameter int unsigned            DbgHwBreakNum                = 1,
-  parameter bit                     SecureIbex                   = 1'b0,
+  parameter bit                     SecureIbex                   = 1'b1,
   parameter int unsigned            LockstepOffset               = 1,
   parameter bit                     MemECC                       = SecureIbex,
   parameter int unsigned            MemDataWidth                 = MemECC ? 32 + 7 : 32,
