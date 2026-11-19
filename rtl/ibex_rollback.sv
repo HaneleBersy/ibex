@@ -273,16 +273,4 @@ module ibex_rollback
         end
     end
 
-    /*
-    * Check mismatch counter
-    * and assert rollback wire 
-    */
-    always_ff @(posedge clk_i or negedge rst_ni) begin
-        if (outputs_mismatch ==  1'b1)
-          assign mismatch_counter <= mismatch_counter + 1; // Increment the rollback counter    
-        else begin
-          for (int unsigned i = 0; i < MismatchCounterSize; i++)
-            mismatch_counter[i] <= 1'b0; // Reset the rollback counter
-        end
-    end
 endmodule
