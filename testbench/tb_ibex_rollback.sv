@@ -1,4 +1,5 @@
 // Ibex rollback testbench
+`include "ibex_rollback.sv"
 
 `timescale 1 ns/10 ps
 
@@ -102,7 +103,7 @@ ibex_rollback DUT (
 //   .main_core_busy_i,
 
   // Shadow Core Output Signals
-  .shadow_instr_req_i(shadow_instr_req_i),
+  .shadow_instr_req_i(shadow_instr_req_i)
 //   input  logic [31:0]                  shadow_instr_addr_i,
 //   input  logic                         shadow_data_req_i,
 //   input  logic                         shadow_data_we_i,
@@ -156,7 +157,7 @@ initial begin // execute the procedure only once !
     rst_ntemp= 1'b0;
 end
 
-
 assign clk_i = clk_temp;
 assign rst_ni = rst_ntemp;
+
 endmodule
