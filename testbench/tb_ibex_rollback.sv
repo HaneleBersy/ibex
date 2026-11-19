@@ -1,16 +1,16 @@
 // Ibex rollback testbench
 
-'timescale 1 ns/10 ps
+`timescale 1 ns/10 ps
 
 module tb_ibex_rollback #(
     parameter int unsigned CLK_CYCLE = 10
 );
 
-  logic                         clk_i,
-  logic                         rst_ni,
+  logic clk_i;
+  logic rst_ni;
 
   // Main Core Output Signals
-  logic                         main_instr_req_i,
+  logic main_instr_req_i;
 //   logic [31:0]                  main_instr_addr_i,
 //   logic                         main_data_req_i,
 //   logic                         main_data_we_i,
@@ -39,7 +39,7 @@ module tb_ibex_rollback #(
 //   ibex_mubi_t                   main_core_busy_i,
 
   // Shadow Core Output Signals
-  logic                         shadow_instr_req_i,
+  logic shadow_instr_req_i;
 //   logic [31:0]                  shadow_instr_addr_i,
 //   logic                         shadow_data_req_i,
 //   logic                         shadow_data_we_i,
