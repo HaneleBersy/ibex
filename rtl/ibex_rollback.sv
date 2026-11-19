@@ -4,7 +4,7 @@
 // This module compares two sets of core outputs. In case of mismatch, both cores are rolled back
 // to execute again the instruction.
 
-module ibex_rollback import ibex_pkg::* #(
+module ibex_rollback; #(
   paramter int unsigned             MismatchCounterSize         = 1,
 //   parameter base_isa_e              BaseIsa                     = BaseIsaRV32I,
 //   parameter int unsigned            LockstepOffset              = 1,
