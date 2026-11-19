@@ -1,7 +1,7 @@
 // Ibex rollback testbench
 `include "ibex_rollback.sv"
 
-`timescale 1 ns/10 ps
+// `timescale 1 ns/10 ps
 
 module tb_ibex_rollback #(
     parameter int unsigned CLK_CYCLE = 10
