@@ -4,8 +4,9 @@
 // This module compares two sets of core outputs. In case of mismatch, both cores are rolled back
 // to execute again the instruction.
 
-module ibex_rollback; #(
-  paramter int unsigned             MismatchCounterSize         = 1,
+module ibex_rollback 
+#(
+  parameter int unsigned             MismatchCounterSize         = 1
 //   parameter base_isa_e              BaseIsa                     = BaseIsaRV32I,
 //   parameter int unsigned            LockstepOffset              = 1,
 //   parameter bit                     PMPEnable                   = 1'b0,
@@ -51,7 +52,8 @@ module ibex_rollback; #(
 //   parameter logic [31:0]            CsrMvendorId                = 32'b0,
 //   // marchid: encoding of base microarchitecture
 //   parameter logic [31:0]            CsrMimpId                   = 32'b0
-) (
+)
+(
   input  logic                         clk_i,
   input  logic                         rst_ni,
 
@@ -260,6 +262,7 @@ module ibex_rollback; #(
            for (int unsigned i = 0; i < MismatchCounterSize; i++) begin
             mismatch_counter[i] <= 1'b0;
            end
+        end
         else begin
           if(outputs_mismatch == 1'b1) begin
             mismatch_counter <= mismatch_counter + 1;
@@ -273,16 +276,12 @@ module ibex_rollback; #(
     * Check mismatch counter
     * and assert rollback wire 
     */
-    always_ff @(posedge clk_i or negedge rst_ni)
-        begin
-            if (outputs_mismatch == (MismatchCounterSize+1)'b1):
-                assign 
-                    mismatch_counter <= mismatch_counter + 1; // Increment the rollback counter    
-            else
-                begin
-                    for (int unsigned i = 0; i < MismatchCounterSize; i++)
-                        mismatch_counter[i] <= 1'b0; // Reset the rollback counter
-                end
+    always_ff @(posedge clk_i or negedge rst_ni) begin
+        if (outputs_mismatch == (MismatchCounterSize+1)'b1)
+          assign mismatch_counter <= mismatch_counter + 1; // Increment the rollback counter    
+        else begin
+          for (int unsigned i = 0; i < MismatchCounterSize; i++)
+            mismatch_counter[i] <= 1'b0; // Reset the rollback counter
         end
-    end
+      end
 endmodule
