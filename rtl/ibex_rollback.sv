@@ -1,5 +1,3 @@
-
-
 // Ibex rollback module
 // This module compares two sets of core outputs. In case of mismatch, both cores are rolled back
 // to execute again the instruction.
@@ -7,6 +5,7 @@
 module ibex_rollback 
 #(
   parameter int unsigned             MismatchCounterSize         = 1
+  parameter int unsigned             MismatchCounterThreshold         = 3
 //   parameter base_isa_e              BaseIsa                     = BaseIsaRV32I,
 //   parameter int unsigned            LockstepOffset              = 1,
 //   parameter bit                     PMPEnable                   = 1'b0,
@@ -116,7 +115,7 @@ module ibex_rollback
   // input  ibex_mubi_t                   shadow_core_busy_i,
   
   // Rollback lines
-  // output logic                          do_rollback,
+  output logic                          trigger_rollback,
 
   // input  logic                         irq_software_i,
   // input  logic                         irq_timer_i,
@@ -251,7 +250,6 @@ module ibex_rollback
         outputs_mismatch <= (main_outputs != shadow_outputs);
     end
     
-
     /*
     * Update mismatch counter 
     */
@@ -272,5 +270,25 @@ module ibex_rollback
           end
         end
     end
+
+    /*
+    * Trigger rollback
+    */
+    
+    always_ff @(posedge clk_i or negedge rst_ni) begin
+      if(!rst_ni) begin
+        trigger_rollback <= 1'b0;
+      end
+      else begin
+        if(mismatch_counter == MismatchCounterThreshold) begin
+          trigger_rollback <= 1'b1;
+        end
+        else begin
+         trigger_rollback <= 1'b0;
+        end
+      end
+    end
+
+
 
 endmodule
