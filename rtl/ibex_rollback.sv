@@ -87,7 +87,7 @@ module ibex_rollback
   // input  ibex_mubi_t                   main_core_busy_i,
 
   // Shadow Core Output Signals
-  input  logic                         shadow_instr_req_i,
+  input  logic                         shadow_instr_req_i
   // input  logic [31:0]                  shadow_instr_addr_i,
   // input  logic                         shadow_data_req_i,
   // input  logic                         shadow_data_we_i,
@@ -271,6 +271,7 @@ module ibex_rollback
             mismatch_counter <= mismatch_counter;
           end
         end
+    end
 
     /*
     * Check mismatch counter
@@ -283,5 +284,5 @@ module ibex_rollback
           for (int unsigned i = 0; i < MismatchCounterSize; i++)
             mismatch_counter[i] <= 1'b0; // Reset the rollback counter
         end
-      end
+    end
 endmodule
