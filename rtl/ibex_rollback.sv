@@ -86,7 +86,7 @@ module ibex_rollback
   // input  ibex_mubi_t                   main_core_busy_i,
 
   // Shadow Core Output Signals
-  input  logic                         shadow_instr_req_i
+  input  logic                         shadow_instr_req_i,
   // input  logic [31:0]                  shadow_instr_addr_i,
   // input  logic                         shadow_data_req_i,
   // input  logic                         shadow_data_we_i,
@@ -115,7 +115,7 @@ module ibex_rollback
   // input  ibex_mubi_t                   shadow_core_busy_i,
   
   // Rollback lines
-  output logic                          trigger_rollback,
+  output logic                          trigger_rollback
 
   // input  logic                         irq_software_i,
   // input  logic                         irq_timer_i,

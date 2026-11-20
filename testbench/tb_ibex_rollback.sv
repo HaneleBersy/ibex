@@ -1,5 +1,5 @@
 // Ibex rollback testbench
-`include "ibex_rollback.sv"
+`include "/home/helen/Projects/ibex/rtl/ibex_rollback.sv"
 
 // `timescale 1 ns/10 ps
 
@@ -9,7 +9,7 @@ module tb_ibex_rollback #(
 
   logic clk_i;
   logic rst_ni;
-
+  logic trigger_rollback;
   // Main Core Output Signals
   logic main_instr_req_i;
 //   logic [31:0]                  main_instr_addr_i,
@@ -103,7 +103,9 @@ ibex_rollback DUT (
 //   .main_core_busy_i,
 
   // Shadow Core Output Signals
-  .shadow_instr_req_i(shadow_instr_req_i)
+  .shadow_instr_req_i(shadow_instr_req_i),
+
+  .trigger_rollback(trigger_rollback)
 //   input  logic [31:0]                  shadow_instr_addr_i,
 //   input  logic                         shadow_data_req_i,
 //   input  logic                         shadow_data_we_i,
@@ -148,17 +150,21 @@ initial begin // execute the procedure only once !
     shadow_instr_req_i = 1'b0;
     main_instr_req_i = 1'b0;
 
-    # 100;
+    # 30;
     shadow_instr_req_i = 1'b1;
-    # 100;
-    shadow_instr_req_i = 1'b0;
-    # 100;
-    main_instr_req_i = 1'b1;
-    # 100;
-    shadow_instr_req_i = 1'b1;
-    # 100;
+    #15;
     rst_ntemp= 1'b0;
-    
+    # 30;
+    shadow_instr_req_i = 1'b0;
+    #15;
+    rst_ntemp= 1'b1;
+    # 30;
+    main_instr_req_i = 1'b1;
+    # 30;
+    shadow_instr_req_i = 1'b1;
+    # 30;
+    rst_ntemp= 1'b0;
+    # 30;
     $finish;
 end
 
