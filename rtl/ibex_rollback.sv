@@ -4,144 +4,26 @@
 
 module ibex_rollback 
 #(
-  parameter int unsigned MismatchCounterSize = 2,
-  parameter int unsigned MismatchCounterThreshold = 3
-//   parameter base_isa_e              BaseIsa                     = BaseIsaRV32I,
-//   parameter int unsigned            LockstepOffset              = 1,
-//   parameter bit                     PMPEnable                   = 1'b0,
-//   parameter int unsigned            PMPGranularity              = 0,
-//   parameter int unsigned            PMPNumRegions               = 4,
-//   parameter ibex_pkg::pmp_cfg_t     PMPRstCfg[PMP_MAX_REGIONS]  = ibex_pkg::PmpCfgRst,
-//   parameter logic [PMP_ADDR_MSB:0]  PMPRstAddr[PMP_MAX_REGIONS] = ibex_pkg::PmpAddrRst,
-//   parameter ibex_pkg::pmp_mseccfg_t PMPRstMsecCfg               = ibex_pkg::PmpMseccfgRst,
-//   parameter int unsigned            MHPMCounterNum              = 0,
-//   parameter int unsigned            MHPMCounterWidth            = 40,
-//   parameter bit                     RV32E                       = 1'b0,
-//   parameter rv32m_e                 RV32M                       = RV32MFast,
-//   parameter rv32b_e                 RV32B                       = RV32BNone,
-//   parameter rv32zc_e                RV32ZC                      = RV32ZcaZcbZcmp,
-//   parameter bit                     BranchTargetALU             = 1'b0,
-//   parameter bit                     WritebackStage              = 1'b0,
-//   parameter bit                     ICache                      = 1'b0,
-//   parameter bit                     ICacheECC                   = 1'b0,
-//   parameter bit                     ICacheTweakInfection        = 1'b0,
-//   parameter int unsigned            BusSizeECC                  = BUS_SIZE,
-//   parameter int unsigned            TagSizeECC                  = IC_TAG_SIZE,
-//   parameter int unsigned            LineSizeECC                 = IC_LINE_SIZE,
-//   parameter bit                     BranchPredictor             = 1'b0,
-//   parameter bit                     DbgTriggerEn                = 1'b0,
-//   parameter int unsigned            DbgHwBreakNum               = 1,
-//   parameter bit                     ResetAll                    = 1'b0,
-//   parameter lfsr_seed_t             RndCnstLfsrSeed             = RndCnstLfsrSeedDefault,
-//   parameter lfsr_perm_t             RndCnstLfsrPerm             = RndCnstLfsrPermDefault,
-//   parameter bit                     SecureIbex                  = 1'b0,
-//   parameter bit                     DummyInstructions           = 1'b0,
-//   parameter bit                     RegFileECC                  = 1'b0,
-//   parameter int unsigned            RegFileDataWidth            = 32,
-//   parameter int unsigned            RegFileDataEccWidth         = 39,
-//   parameter int unsigned            RegFileCapEccWidth          = REGCAP_W + 7,
-//   parameter regfile_e               RegFile                     = RegFileFF,
-//   parameter bit                     MemECC                      = 1'b0,
-//   parameter int unsigned            MemDataWidth                = MemECC ? 32 + 7 : 32,
-//   parameter int unsigned            DmBaseAddr                  = 32'h1A110000,
-//   parameter int unsigned            DmAddrMask                  = 32'h00000FFF,
-//   parameter int unsigned            DmHaltAddr                  = 32'h1A110800,
-//   parameter int unsigned            DmExceptionAddr             = 32'h1A110808,
-//   // mvendorid: encoding of manufacturer/provider
-//   parameter logic [31:0]            CsrMvendorId                = 32'b0,
-//   // marchid: encoding of base microarchitecture
-//   parameter logic [31:0]            CsrMimpId                   = 32'b0
+  parameter int unsigned MismatchCounterLen = 3,
+  parameter logic [MismatchCounterLen-1:0] MismatchCounterThreshold = '1
 )
 (
-  input  logic                         clk_i,
-  input  logic                         rst_ni,
+  input  logic clk_i,
+  input  logic rst_ni,
 
-  // Main Core Output Signals
-  input  logic                         main_instr_req_i,
-  // input  logic [31:0]                  main_instr_addr_i,
-  // input  logic                         main_data_req_i,
-  // input  logic                         main_data_we_i,
-  // input  logic [3:0]                   main_data_be_i,
-  // input  logic [31:0]                  main_data_addr_i,
-  // input  logic [31:0]                  main_data_wdata_i,
-  // input  logic                         main_data_tag_i,
-  // input  logic [4:0]                   main_rf_raddr_a_i,
-  // input  logic [4:0]                   main_rf_raddr_b_i,
-  // input  logic [4:0]                   main_rf_waddr_wb_i,
-  // input  logic                         main_rf_we_wb_i,
-  // input  logic [RegFileDataWidth-1:0]  main_rf_wdata_wb_i,
-  // input  cap_t                         main_rf_wcap_wb_i,
-  // input  logic [IC_NUM_WAYS-1:0]       main_ic_tag_req_i,
-  // input  logic                         main_ic_tag_write_i,
-  // input  logic [IC_INDEX_W-1:0]        main_ic_tag_addr_i,
-  // input  logic [TagSizeECC-1:0]        main_ic_tag_wdata_i,
-  // input  logic [IC_NUM_WAYS-1:0]       main_ic_data_req_i,
-  // input  logic                         main_ic_data_write_i,
-  // input  logic [IC_INDEX_W-1:0]        main_ic_data_addr_i,
-  // input  logic [LineSizeECC-1:0]       main_ic_data_wdata_i,
-  // input  logic                         main_ic_scr_key_req_i,
-  // input  logic                         main_irq_pending_i,
-  // input  crash_dump_t                  main_crash_dump_i,
-  // input  logic                         main_double_fault_seen_i,
-  // input  ibex_mubi_t                   main_core_busy_i,
+  // Core's EX output signals
+  input  logic main_instr_req_i,
 
-  // Shadow Core Output Signals
-  input  logic                         shadow_instr_req_i,
-  // input  logic [31:0]                  shadow_instr_addr_i,
-  // input  logic                         shadow_data_req_i,
-  // input  logic                         shadow_data_we_i,
-  // input  logic [3:0]                   shadow_data_be_i,
-  // input  logic [31:0]                  shadow_data_addr_i,
-  // input  logic [31:0]                  shadow_data_wdata_i,
-  // input  logic                         shadow_data_tag_i,
-  // input  logic [4:0]                   shadow_rf_raddr_a_i,
-  // input  logic [4:0]                   shadow_rf_raddr_b_i,
-  // input  logic [4:0]                   shadow_rf_waddr_wb_i,
-  // input  logic                         shadow_rf_we_wb_i,
-  // input  logic [RegFileDataWidth-1:0]  shadow_rf_wdata_wb_i,
-  // input  cap_t                         shadow_rf_wcap_wb_i,
-  // input  logic [IC_NUM_WAYS-1:0]       shadow_ic_tag_req_i,
-  // input  logic                         shadow_ic_tag_write_i,
-  // input  logic [IC_INDEX_W-1:0]        shadow_ic_tag_addr_i,
-  // input  logic [TagSizeECC-1:0]        shadow_ic_tag_wdata_i,
-  // input  logic [IC_NUM_WAYS-1:0]       shadow_ic_data_req_i,
-  // input  logic                         shadow_ic_data_write_i,
-  // input  logic [IC_INDEX_W-1:0]        shadow_ic_data_addr_i,
-  // input  logic [LineSizeECC-1:0]       shadow_ic_data_wdata_i,
-  // input  logic                         shadow_ic_scr_key_req_i,
-  // input  logic                         shadow_irq_pending_i,
-  // input  crash_dump_t                  shadow_crash_dump_i,
-  // input  logic                         shadow_double_fault_seen_i,
-  // input  ibex_mubi_t                   shadow_core_busy_i,
+ // External core's EX output signals
+  input logic shadow_instr_req_i, 
   
   // Rollback lines
-  output logic                          trigger_rollback
+  input logic [1:0] ext_rb_trig_i, // rollback triggers from outside
+  output logic core_rb_trig_o, // internal rollback line
 
-  // input  logic                         irq_software_i,
-  // input  logic                         irq_timer_i,
-//   input  logic                         irq_external_i,
-//   input  logic [14:0]                  irq_fast_i,
-//   input  logic                         irq_nm_i,
+  // Log information
+  output logic [MismatchCounterLen-1:0] mismatch_counter_o
 
-//   input  logic                         debug_req_i,
-
-//   input  ibex_mubi_t                   fetch_enable_i,
-//   input  ibex_mubi_t                   mcounteren_writable_i,
-//   output logic                         alert_minor_o,
-//   output logic                         alert_major_internal_o,
-//   output logic                         alert_major_bus_o,
-//   input  logic                         test_en_i,
-//   input  logic                         scan_rst_ni,
-
-//   output ibex_mubi_t                   lockstep_cmp_en_o,
-//   output logic                         data_req_shadow_o,
-//   output logic                         data_we_shadow_o,
-//   output logic [3:0]                   data_be_shadow_o,
-//   output logic [31:0]                  data_addr_shadow_o,
-//   output logic [31:0]                  data_wdata_shadow_o,
-//   output logic [6:0]                   data_wdata_intg_shadow_o,
-//   output logic                         instr_req_shadow_o,
-//   output logic [31:0]                  instr_addr_shadow_o
 );
 
     // Relevant Signals From Core Output
@@ -253,35 +135,39 @@ module ibex_rollback
     /*
     * Update mismatch counter 
     */
-    int unsigned mismatch_counter;
+    logic [MismatchCounterLen-1:0] mismatch_counter_local;
 
     always_ff @(posedge clk_i or negedge rst_ni) begin
         if(!rst_ni) begin
-           mismatch_counter <= 0;
+           mismatch_counter_local <= 0;
           end
         else begin
-          if(outputs_mismatch == 1'b1) begin
-            mismatch_counter <= mismatch_counter + 1;
+          if(outputs_mismatch == 1'b1 && core_rb_trig_o == 1'b0) begin
+            mismatch_counter_local <= mismatch_counter_local + 1;
           end
           else begin
-            mismatch_counter <= mismatch_counter;
+            mismatch_counter_local <= mismatch_counter_local;
           end
         end
     end
 
     /*
-    * Trigger rollback
+    * Update core rollback trigger :
+    * If there is an output mismatch or an external rollback is asked,
+    * the core rollback trigger is asserted.
     */
     always_ff @(posedge clk_i or negedge rst_ni) begin
       if(!rst_ni) begin
-        trigger_rollback <= 1'b0;
+        core_rb_trig_o <= 1'b0;
+        mismatch_counter_o <= 'b0;
       end
       else begin
-        if(mismatch_counter == MismatchCounterThreshold) begin
-          trigger_rollback <= 1'b1;
+        if(outputs_mismatch == 1'b1 || |ext_rb_trig_i == 1'b1) begin
+          core_rb_trig_o <= 1'b1;
+          mismatch_counter_o <= mismatch_counter_local;
         end
         else begin
-         trigger_rollback <= 1'b0;
+         core_rb_trig_o <= 1'b0;
         end
       end
     end
