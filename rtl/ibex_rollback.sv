@@ -253,42 +253,36 @@ module ibex_rollback
     /*
     * Update mismatch counter 
     */
-    // logic [MismatchCounterSize-1:0] mismatch_counter;
+    int unsigned mismatch_counter;
 
-    // always_ff @(posedge clk_i or negedge rst_ni) begin
-    //     if(!rst_ni) begin
-    //        for (int unsigned i = 0; i < MismatchCounterSize; i++) begin
-    //         mismatch_counter[i] <= 1'b0;
-    //        end
-    //     end
-    //     else begin
-    //       if(outputs_mismatch == 1'b1) begin
-    //         mismatch_counter <= mismatch_counter + 1;
-    //       end
-    //       else begin
-    //         mismatch_counter <= mismatch_counter;
-    //       end
-    //     end
-    // end
+    always_ff @(posedge clk_i or negedge rst_ni) begin
+        if(!rst_ni) begin
+           mismatch_counter <= 0;
+          end
+        else begin
+          if(outputs_mismatch == 1'b1) begin
+            mismatch_counter <= mismatch_counter + 1;
+          end
+          else begin
+            mismatch_counter <= mismatch_counter;
+          end
+        end
+    end
 
     /*
     * Trigger rollback
     */
-    
-    // always_ff @(posedge clk_i or negedge rst_ni) begin
-    //   if(!rst_ni) begin
-    //     trigger_rollback <= 1'b0;
-    //   end
-    //   else begin
-    //     if(mismatch_counter == MismatchCounterThreshold) begin
-    //       trigger_rollback <= 1'b1;
-    //     end
-    //     else begin
-    //      trigger_rollback <= 1'b0;
-    //     end
-    //   end
-    // end
-
-
-
+    always_ff @(posedge clk_i or negedge rst_ni) begin
+      if(!rst_ni) begin
+        trigger_rollback <= 1'b0;
+      end
+      else begin
+        if(mismatch_counter == MismatchCounterThreshold) begin
+          trigger_rollback <= 1'b1;
+        end
+        else begin
+         trigger_rollback <= 1'b0;
+        end
+      end
+    end
 endmodule

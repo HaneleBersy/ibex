@@ -1,0 +1,35 @@
+[*]
+[*] GTKWave Analyzer v3.3.126 (w)1999-2026 BSI
+[*] Fri Nov 20 10:06:59 2026
+[*]
+[dumpfile] "/home/helen/Projects/ibex/verilating/ibex_rollback/tb_ibex_rollback.vcd"
+[dumpfile_mtime] "Fri Nov 20 10:05:22 2026"
+[dumpfile_size] 1361
+[savefile] "/home/helen/Projects/ibex/verilating/ibex_rollback/tb_ibex_rollback.gtkw"
+[timestart] 12
+[size] 1920 985
+[pos] -1 -1
+*-4.550189 105 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] TOP.
+[treeopen] TOP.tb_ibex_rollback.
+[sst_width] 297
+[signals_width] 332
+[sst_expanded] 1
+[sst_vpaned_height] 291
+@28
+TOP.tb_ibex_rollback.DUT.clk_i
+TOP.tb_ibex_rollback.DUT.rst_ni
+[color] 1
+TOP.tb_ibex_rollback.DUT.main_instr_req_i
+[color] 5
+TOP.tb_ibex_rollback.DUT.shadow_instr_req_i
+[color] 3
+TOP.tb_ibex_rollback.DUT.outputs_mismatch
+@22
+[color] 3
+TOP.tb_ibex_rollback.DUT.mismatch_counter[31:0]
+@29
+[color] 3
+TOP.tb_ibex_rollback.DUT.trigger_rollback
+[pattern_trace] 1
+[pattern_trace] 0

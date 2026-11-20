@@ -150,21 +150,23 @@ initial begin // execute the procedure only once !
     shadow_instr_req_i = 1'b0;
     main_instr_req_i = 1'b0;
 
-    # 30;
+    # 20;
     shadow_instr_req_i = 1'b1;
-    #15;
+    # 15;
     rst_ntemp= 1'b0;
-    # 30;
+    # 5;
     shadow_instr_req_i = 1'b0;
-    #15;
+    # 5;
     rst_ntemp= 1'b1;
-    # 30;
+    # 20;
     main_instr_req_i = 1'b1;
-    # 30;
+    # 60;
     shadow_instr_req_i = 1'b1;
-    # 30;
+    # 20;
     rst_ntemp= 1'b0;
-    # 30;
+    # 5;
+    rst_ntemp= 1'b1;
+    # 20;
     $finish;
 end
 
