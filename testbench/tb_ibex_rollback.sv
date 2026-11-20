@@ -135,15 +135,18 @@ ibex_rollback DUT (
 logic clk_temp;
 logic rst_ntemp;
 
+// Clock generation
+always # (CLK_CYCLE/2) clk_temp = ~clk_temp; 
+
 initial begin // execute the procedure only once !
+    $dumpfile("tb_ibex_rollback.vcd");
+    $dumpvars();
+    
     // Initial state
     clk_temp = 1'b0;
     rst_ntemp = 1'b1;
     shadow_instr_req_i = 1'b0;
     main_instr_req_i = 1'b0;
-
-    // Clock generation
-    forever # (CLK_CYCLE/2) clk_temp = ~clk_temp; 
 
     # 100;
     shadow_instr_req_i = 1'b1;
@@ -155,6 +158,8 @@ initial begin // execute the procedure only once !
     shadow_instr_req_i = 1'b1;
     # 100;
     rst_ntemp= 1'b0;
+    
+    $finish;
 end
 
 assign clk_i = clk_temp;
